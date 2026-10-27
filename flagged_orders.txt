@@ -1,0 +1,3 @@
+Empty DataFrame
+Columns: [order_id, customer_id, order_date, product, total_amount, status, country, updated_at]
+Index: []
