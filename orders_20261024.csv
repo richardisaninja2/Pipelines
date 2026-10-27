@@ -1,0 +1,103 @@
+order_id,customer_id,customer_name,email,order_date,product,category,quantity,unit_price,total_amount,status,country,updated_at
+ORD-001089,1043,Mia Davis,mia.davis@example.com,2026-10-24,Yoga Mat,Outdoors,3,29.90,89.70,shipped,AU,2026-10-24 23:37:04
+ORD-001070,1060,Ava Johnson,ava.johnson@example.com,2026-10-24,Green Tea Box,Groceries,1,7.80,7.80,cancelled,US,2026-10-24 12:29:22
+ORD-001057,1042,Noah Brown,noah.brown@example.com,2026-10-24,Water Bottle,Outdoors,4,15.00,60.00,cancelled,US,2026-10-24 04:07:02
+ORD-001071,1046,Lucas Martinez,lucas.martinez@example.com,2026-10-24,USB-C Cable,Electronics,5,9.99,49.95,pending,DE,2026-10-24 20:38:16
+ORD-001046,1057,Isla Lee,isla.lee@example.com,2026-10-24,Yoga Mat,FURNITURE,4,29.90,119.60,delivered,AU,2026-10-24 12:47:49
+ORD-001063,1042,Noah Brown,noah.brown@example.com,2026-10-24,Office Chair,Furniture,1,189.50,189.50,shipped,CA,2026-10-24 13:32:12
+ORD-001016,1023,Mia Davis,mia.davis@example.com,2026-10-24,Yoga Mat,Outdoors,5,29.90,149.50,delivered,UK,2026-10-24 03:14:25
+ORD-001003,1040,Ava Johnson,ava.johnson@example.com,2026-10-24,Wireless Mouse,electronics,4,24.99,99.96,shipped,US,2026-10-24 02:16:52
+ORD-001014,1050,Ava Johnson,ava.johnson@example.com,2026-10-24,Office Chair,Furniture,5,189.50,947.50,delivered,CA,2026-10-24 07:20:21
+ORD-001085,1022,Noah Brown,noah.brown@example.com,2026-10-24,USB-C Cable,Electronics,1,9.99,9.99,shipped,US,2026-10-24 21:47:04
+ORD-001092,1002,Noah Brown,noah.brownexample.com,2026-10-24,Coffee Beans 1kg,Grocery,5,18.20,91.00,pending,CA,2026-10-24 09:45:50
+ORD-001065,1011,Liam Smith,liam.smith@example.com,2026-10-24,Standing Desk,Furniture,4,349.00,1396.00,cancelled,UK,2026-10-24 12:11:24
+ORD-001031,1055,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Standing Desk,Furniture,1,349.00,349.00,pending,AU,2026-10-24 04:03:59
+ORD-001048,1058,Mason Clark,mason.clark@example.com,2026-10-24,Green Tea Box,Grocery,4,7.80,31.20,shipped,AU,2026-10-24 13:14:44
+ORD-001076,1011,Liam Smith,liam.smith@example.com,2026-10-24,Yoga Mat,Outdoors,3 ,29.90,89.70,shipped,DE,2026-10-24 14:25:12
+ORD-001051,1026,Lucas Martinez,lucas.martinez@example.com,2026-10-24,Yoga Mat,Outdoors,5,29.90,149.50,cancelled,CA,2026-10-24 05:33:23
+ORD-001040,1028,Mason Clark,mason.clark@example.com,2026-10-24,Gel Pens,Stationery,2,6.49,12.98,delivered,CA,2026-10-24 21:48:16
+ORD-001007,1020,Ava Johnson,ava.johnson@example.com,2026-10-24,Standing Desk,Furniture,3,349.00,1047.00,pending,AU,2026-10-24 12:46:54
+ORD-001063,1042,Noah Brown,noah.brown@example.com,2026-10-24,Office Chair,Furniture,1,189.50,189.50,shipped,CA,2026-10-24 13:32:12
+ORD-001059,1052,Noah Brown,noah.brown@example.com,2026-10-24,Yoga Mat,Outdoors,3,29.90,89.70,cancelled,CA,2026-10-24 09:07:12
+ORD-001062,1057,Isla Lee,isla.leeexample.com,2026-10-24,Yoga Mat,Outdoors,2,29.90,59.80,pending,DE,2026-10-24 09:22:43
+ORD-001091,1035,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Green Tea Box,Grocery,3,7.80,23.40,shipped,DE,2026-10-24 05:09:48
+ORD-001095,1032,Noah Brown,noah.brownexample.com,2026-10-24,Office Chair,Furniture,5,189.50,947.50,cancelled,UK,2026-10-24 12:31:11
+ORD-001020,1037,Isla Lee,isla.lee@example.com,2026-10-24,Standing Desk,Furniture,3,349.00,1047.00,cancelled,US,2026-10-24 22:42:56
+ORD-001006,1008,Mason Clark,mason.clark@example.com,2026-10-24,Standing Desk,Furniture,3,349.00,1047.00,shipped,UK,2026-10-24 15:50:05
+ORD-001001,1058,Mason Clark,mason.clark@example.com,2026-10-24,Gel Pens,Stationery,2,6.49,12.98,delivered,UK,2026-10-24 00:00:00
+ORD-001064,1047,Isla Lee,isla.lee@example.com,2026-10-24,USB-C Cable,Electronics,5.0,9.99,9.99,cancelled,AU,2026-10-24 23:07:06
+ORD-001004,1005,Sofia Garcia,sofia.garcia@example.com,2026-10-24,USB-C Cable,Electronics,3,9.99,29.97,delivered,US,2026-10-24 11:42:13
+ORD-001060,1052,Noah Brown,noah.brown@example.com,2026-10-24,Office Chair,Furniture,3,189.50,568.50,cancelled,US,2026-10-24 05:04:25
+ORD-001073,1021,NULL,liam.smith@example.com,2026-10-24,Notebook 3-pack,Stationery,5,12.75,63.75,pending,CA,2026-10-24 18:33:19
+ORD-001026,1015,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Water Bottle,Outdoors,3,15.00,45.00,pending,AU,2026-10-24 05:16:55
+ORD-001022,1009,ZOE WALKER,zoe.walker@example.com,2026-10-24,Water Bottle,Outdoors,1,15.00,15.00,CANCELLED,us,2026-10-24 16:00:11
+ORD-001062,1057,Isla Lee,isla.leeexample.com,2026-10-24,Yoga Mat,Outdoors,2,29.90,59.80,pending,DE,2026-10-24 09:22:43
+ORD-001044,1001,LIAM SMITH,liam.smith@example.com,2026-10-24,Office Chair,Furniture,4,189.50,758.00,DELIVERED,au,2026-10-24 01:12:42
+ORD-001037,1039,Zoe Walker,zoe.walker@example.com,2026-10-24,Standing Desk,Furniture,1,349.00,349.00,shipped,AU,2026-10-24 16:38:41
+ORD-001058,1017,Isla Lee,isla.lee@example.com,2026-10-24,Water Bottle,Outdoors,5,15.00,75.00,shipped,AU,2026-10-24 23:21:45
+ORD-001019,1052,Noah Brown,noah.brown@example.com,2026-10-24,USB-C Cable,Electronics,3,9.99,29.97,cancelled,CA,2026-10-24 21:57:31
+ORD-001066,1041,Liam Smith,liam.smith@example.com,2026-10-24,Wireless Mouse,Electronics,2,24.99,49.98,cancelled,AU,2026-10-24 09:47:38
+ORD-001005,1003,Mia Davis,mia.davis@example.com,2026-10-24,Standing Desk,Furniture,1,349.00,349.00,shipped,AU,2026-10-24 11:21:29
+ORD-001086,1033,Mia Davis,mia.davis@example.com,2026-10-24,Green Tea Box,Grocery,5,$7.80,$39.00,delivered,AU,2026-10-24 08:03:11
+ORD-001047,1046,Lucas Martinez,lucas.martinez@example.com,2026-10-24,USB-C Cable,Electronics,1,9.99,9.99,delivered,DE,2026-10-24 20:04:51
+ORD-001088,1015,SOFIA GARCIA,sofia.garcia@example.com,2026-10-24,Notebook 3-pack,Stationery,3,12.75,38.25,SHIPPED,ca,2026-10-24 14:24:33
+ORD-001061,1028,MASON CLARK,mason.clark@example.com,2026-10-24,Gel Pens,Stationery,4,6.49,25.96,SHIPPED,ca,2026-10-24 07:03:58
+ORD-001069,1034,Ethan Wilson,ethan.wilson@example.com,2026-10-24,USB-C Cable,Electronics,3,9.99,29.97,shipped,CA,2026-10-24 06:05:58
+ORD-001043,1040,Ava Johnson,ava.johnson@example.com,2026-10-24,Water Bottle,Outdoors,3,15.00,45.00,shipped,CA,2026-10-24 18:50:20
+ORD-001008,1045,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Gel Pens,Stationery,3,6.49,19.47,delivered,CA,2026-10-24 20:40:55
+ORD-001054,1035,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Water Bottle,Outdoors,4,15.00,60.00,delivered,AU,2026-10-24 05:50:40
+ORD-001084,1046,Lucas Martinez,lucas.martinez@example.com,2026-10-24,Wireless Mouse,Electronics,2,24.99,49.98,delivered,DE,2026-10-24 06:08:40
+ORD-001013,1003,Mia Davis,mia.davis@example.com,2026-10-24,Coffee Beans 1kg,Grocery,1,18.20,18.20,shipped,AU,2026-10-24 00:30:47
+ORD-001032,1012,Noah Brown,noah.brown@example.com,2026-10-24,Wireless Mouse,electronics,5,24.99,124.95,delivered,US,2026-10-24 17:41:56
+ORD-001053,1004,Ethan Wilson,ethan.wilson@example.com,2026-10-24,Water Bottle,Outdoors,2,15.00,30.00,shipped,CA,2026-10-24 01:07:03
+ORD-001030,1011,Liam Smith,liam.smith@example.com,2026-10-24,Water Bottle,Outdoors,1,15.00,15.00,cancelled,DE,2026-10-24 17:31:05
+ORD-001035,1055,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Water Bottle,Outdoors,5,$15.00,$75.00,pending,US,2026-10-24 08:15:27
+ORD-001025,1003,Mia Davis,mia.davis@example.com,2026-10-24,USB-C Cable,Electronics,3,9.99,29.97,shipped,CA,2026-10-24 21:43:10
+ORD-001067,1003,Mia Davis,mia.davis@example.com,2027-10-24,Standing Desk,Furniture,4,349.00,1396.00,cancelled,DE,2026-10-24 05:54:03
+ORD-001001,1048,Mason Clark,mason.clark@example.com,2026-10-24,Coffee Beans 1kg,Grocery,5,18.20,91.00,pending,DE,2026-10-24 11:02:45
+ORD-001072,1034,Ethan Wilson,ethan.wilson@example.com,2026-10-24,Yoga Mat,Outdoors,3,29.90,89.70,cancelled,AU,2026-10-24 04:15:58
+ORD-001083,1052,Noah Brown,noah.brown@example.com,2026-10-24,USB-C Cable,Electronics,4,9.99,39.96,cancelled,AU,2026-10-24 23:16:08
+ORD-001015,1019,Zoe Walker,zoe.walker@example.com,24-Oct-2026,Gel Pens,Stationery,5,6.49,32.45,shipped,US,2026-10-24 08:13:31
+ORD-001075,1057,Isla Lee,isla.lee@example.com,2026-10-24,Wireless Mouse,Electronics,1,24.99,24.99,shipped,DE,2026-10-24 11:43:01
+ORD-001001,1009,Zoe Walker,zoe.walker@example.com,2026-10-24,Water Bottle,Outdoors,4,15.00,60.00,delivered,DE,2026-10-24 00:00:00
+ORD-001074,1004,Ethan Wilson,ethan.wilson@example.com,2026-10-24,Notebook 3-pack,Stationery,3,12.75,38.25,delivered,CA,2026-10-24 19:29:40
+ORD-001024,1028,Mason Clark,mason.clark@example.com,2026-10-24,USB-C Cable,Electronics,2,9.99,19.98,shipped,DE,2026-10-24 10:16:50
+ORD-001079,1022,Noah Brown,noah.brown@example.com,2026-10-24,Wireless Mouse,Electronics,3,24.99,74.97,pending,DE,2026-10-24 05:05:25
+ORD-001087,1045,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Green Tea Box,Grocery,3,7.80,23.40,shipped,DE,2026-10-24 17:17:59
+ORD-001027,1018,Mason Clark,mason.clark@example.com,2026-10-24,Office Chair,electronics,5,189.50,947.50,cancelled,AU,2026-10-24 00:59:46
+ORD-001078,1005,Sofia Garcia,sofia.garcia@example.com,2026-10-24,USB-C Cable,Electronics,-5,9.99,49.95,pending,CA,2026-10-24 04:34:02
+ORD-001049,1035,Sofia Garcia,sofia.garcia@example.com,2027-10-24,Gel Pens,Stationery,2,6.49,12.98,pending,DE,2026-10-24 06:59:02
+ORD-001029,1049,Zoe Walker,zoe.walker@example.com,2026-10-24,Gel Pens,Stationery,1,$6.49,$6.49,delivered,CA,2026-10-24 04:07:09
+ORD-001056,1053,Mia Davis,mia.davis@example.com,2026-10-24,Water Bottle,Outdoors,2,15.00,30.00,delivered,CA,2026-10-24 12:48:42
+ORD-001093,1035,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Standing Desk,Furniture,3,349.00,1047.00,shipped,DE,2026-10-24 17:57:39
+ORD-001021,1058,Mason Clark,mason.clark@example.com,2026-10-24,Green Tea Box,Grocery,4,7.80,31.20,shipped,AU,2026-10-24 05:50:48
+ORD-001028,1038,Mason Clark,mason.clark@example.com,2026-10-24,Standing Desk,Furniture,4,349.00,1396.00,cancelled,DE,2026-10-24 02:14:49
+ORD-001036,1039,Zoe Walker,zoe.walker@example.com,2026-10-24,Notebook 3-pack,Stationery,5,12.75,63.75,cancelled,DE,2026-10-24 20:07:39
+ORD-001034,1010,Ava Johnson,ava.johnson@example.com,2026-10-24,Notebook 3-pack,Stationery,1,12.75,12.75,cancelled,US,2026-10-24 12:55:03
+ORD-001023,1039,Zoe Walker,zoe.walker@example.com,2026-10-24,Yoga Mat,Outdoors,3,29.90,89.70,delivered,AU,2026-10-24 03:52:12
+ORD-001041,1012,Noah Brown,noah.brown@example.com,2026-10-24,Green Tea Box,Grocery,1,7.80,7.80,shipped,UK,2026-10-24 13:52:09
+ORD-001033,1002,Noah Brown,noah.brown@example.com,2026-10-24,Notebook 3-pack,Stationery,5,12.75,63.75,shipped,CA,2026-10-24 07:26:54
+ORD-001017,1025,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Green Tea Box,Grocery,5,7.80,39.00,delivered,US,2026-10-24 09:35:10
+ORD-001042,1022,Noah Brown,noah.brown@example.com,2026-10-24,Gel Pens,Stationery,1,6.49,6.49,shipped,US,2026-10-24 11:14:02
+ORD-001052,1027,Isla Lee,isla.lee@example.com,2026-10-24,USB-C Cable,Electronics,5,9.99,49.95,shipped,US,2026-10-24 21:44:51
+ORD-001094,1047,ISLA LEE,isla.lee@example.com,2026-10-24,Notebook 3-pack,Stationery,2,12.75,25.50,DELIVERED,uk,2026-10-24 20:16:18
+ORD-001001,1058,Mason Clark,mason.clark@example.com,2026-10-24,USB-C Cable,Electronics,4,9.99,39.96,delivered,US,2026-10-24 00:00:00
+ORD-001009,1017,Isla Lee,isla.lee@example.com,2026-10-24,Standing Desk,Furniture,3,349.00,1047.00,cancelled,DE,2026-10-24 06:13:18
+ORD-001050,1039,Zoe Walker,zoe.walker@example.com,2026-10-24,Wireless Mouse,Electronics,5,24.99,124.95,shipped,DE,2026-10-24 12:05:50
+ORD-001039,1005,Sofia Garcia,sofia.garcia@example.com,2027-10-24,Yoga Mat,Outdoors,4,29.90,119.60,pending,CA,2026-10-24 02:26:46
+ORD-001012,1015,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Coffee Beans 1kg,Grocery,2,18.20,36.40,cancelled,UK,2026-10-24 23:58:40
+ORD-001080,1022,Noah Brown,noah.brown@example.com,24-Oct-2026,Standing Desk,Furniture,5,349.00,1745.00,pending,DE,2026-10-24 03:30:07
+ORD-001081,1054,Ethan Wilson,ethan.wilson@example.com,2026-10-24,Notebook 3-pack,Stationery,2,12.75,25.50,cancelled,DE,2026-10-24 07:31:22
+ORD-001068,1003,Mia Davis,mia.davis@example.com,2026-10-24,Green Tea Box,Grocery,3,7.80,23.40,delivered,US,2026-10-24 03:35:08
+ORD-001018,1048,Mason Clark,mason.clark@example.com,2026-10-24,USB-C Cable,Electronics,1,9.99,9.99,pending,CA,2026-10-24 05:55:00
+ORD-001045,1011,Liam Smith,liam.smith@example.com,2026-10-24,USB-C Cable,Electronics,2,9.99,19.98,delivered,DE,2026-10-24 20:20:18
+ORD-001002,1040,Ava Johnson,ava.johnson@example.con,2026-10-24,Office Chair,Furniture,4,189.50,758.00,cancelled,US,2026-10-24 15:04:56
+ORD-001090,1043,Mia Davis,mia.davis@example.com,2026-10-24,Yoga Mat,Outdoors,3,29.90,89.70,delivered,CA,2026-10-24 22:13:14
+ORD-001002,1040,Ava Johnson,ava.johnson@example.con,2026-10-24,Office Chair,Furniture,4,189.50,758.00,cancelled,US,2026-10-24 15:04:56
+ORD-001038,1011,NULL,liam.smith@example.com,2026-10-24,Coffee Beans 1kg,Grocery,3,18.20,54.60,shipped,US,2026-10-24 01:50:58
+ORD-001010,1005,Sofia Garcia,sofia.garcia@example.com,2026-10-24,Coffee Beans 1kg,Grocery,4,18.20,72.80,pending,UK,2026-10-24 21:32:54
+ORD-001082,1036,Lucas Martinez,lucas.martinez@example.com,2026-10-24,Office Chair,Furniture,two,189.50,568.50,delivered,AU,2026-10-24 15:52:03
+ORD-001011,1042,Noah Brown,noah.brown@example.com,2026-10-24,Yoga Mat,Outdoors,3,29.90,89.70,pending,DE,2026-10-24 12:08:18
+ORD-001055,1036,Lucas Martinez,lucas.martinez@example.com,2026-10-24,Gel Pens,Stationery,3 ,6.49,25.96,cancelled,DE,2026-10-24 19:47:01
+ORD-001077,1026,Lucas Martinez,lucas.martinez@example.com,24-Oct-2026,Yoga Mat,Outdoors,5,29.90,149.50,shipped,UK,2026-10-24 12:51:21
+ORD-001001,1017,Isla Lee,isla.lee@example.com,2026-10-24,Coffee Beans 1kg,Grocery,2,18.20,36.40,delivered,US,2026-10-24 00:00:00
