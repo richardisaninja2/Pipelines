@@ -95,12 +95,39 @@ def build_orders(df: pd.DataFrame, date_to_load_from: str):
     return valid_orders, flagged_orders
 
 
-def write_flagged(flagged_orders: pd.DataFrame) -> str | None:
-    """Write flagged rows to a CSV; returns the path (or None if nothing flagged)."""
+def parse_source_name(source_name: str | None) -> dict[str, Any]:
+    """Pull the file name, stem and embedded date (YYYYMMDD) out of a path or gs:// URI.
+
+    'gs://my-bucket/incoming/orders_20261025.csv' ->
+        {'file_name': 'orders_20261025.csv', 'file_stem': 'orders_20261025', 'file_date': '2026-10-25'}
+    """
+    if not source_name:
+        return {"file_name": None, "file_stem": None, "file_date": None}
+
+    file_name = os.path.basename(source_name)
+    file_stem = os.path.splitext(file_name)[0]
+
+    file_date = None
+    match = re.search(r"(\d{8})", file_stem)
+    if match:
+        try:
+            file_date = datetime.strptime(match.group(1), "%Y%m%d").strftime("%Y-%m-%d")
+        except ValueError:
+            pass  # 8 digits but not a real date
+
+    return {"file_name": file_name, "file_stem": file_stem, "file_date": file_date}
+
+
+def write_flagged(flagged_orders: pd.DataFrame, file_stem: str | None = None) -> str | None:
+    """Write flagged rows to a CSV; returns the path (or None if nothing flagged).
+
+    Named after the source file (flagged_orders_20261025.csv) when known,
+    otherwise after today's date.
+    """
     if flagged_orders.empty:
         return None
-    run_date = datetime.now().strftime("%Y%m%d")
-    path = os.path.join(OUTPUT_DIR, f"flagged_orders_{run_date}.csv")
+    suffix = file_stem or f"orders_{datetime.now().strftime('%Y%m%d')}"
+    path = os.path.join(OUTPUT_DIR, f"flagged_{suffix}.csv")
     flagged_orders.to_csv(path, index=False)
     return path
 
@@ -192,22 +219,29 @@ def stage_and_merge(engine, df: pd.DataFrame, temp_table: str,
 # --------------------------------------------------------------------------- #
 # Orchestration
 # --------------------------------------------------------------------------- #
-def run_pipeline(source) -> dict[str, Any]:
+def run_pipeline(source, source_name: str | None = None) -> dict[str, Any]:
     """Run the full incremental load.
 
     `source` is anything pandas.read_csv accepts: a path or a file-like object.
+    `source_name` is the file's identity (e.g. 'gs://bucket/incoming/orders_20261025.csv');
+    when omitted and `source` is a path string, that path is used.
     Returns a JSON-serialisable summary of what happened.
     """
+    if source_name is None and isinstance(source, (str, os.PathLike)):
+        source_name = str(source)
+    file_info = parse_source_name(source_name)
+    logger.info("Starting load for %s", source_name or "<unnamed source>")
+
     engine = get_engine()
 
     date_to_load_from = get_watermark(engine)
-    logger.info("Watermark: %s", date_to_load_from)
+    logger.info("Watermark before load: %s", date_to_load_from)
 
     df = pd.read_csv(source)
     rows_in_file = len(df)
 
     valid_orders, flagged_orders = build_orders(df, date_to_load_from)
-    flagged_path = write_flagged(flagged_orders)
+    flagged_path = write_flagged(flagged_orders, file_info["file_stem"])
 
     customers = build_customers(df)  # built but not loaded yet (same as notebook)
     products = build_products(df)
@@ -215,8 +249,17 @@ def run_pipeline(source) -> dict[str, Any]:
     orders_result = stage_and_merge(engine, valid_orders, "orders_temp", "order_id", ORDERS_MERGE, "orders")
     products_result = stage_and_merge(engine, products, "products_temp", "product", PRODUCTS_MERGE, "products")
 
+    new_watermark = (
+        valid_orders["updated_at"].max().strftime("%Y-%m-%d %H:%M:%S")
+        if not valid_orders.empty else date_to_load_from
+    )
+
     return {
+        "source": source_name,
+        "file_name": file_info["file_name"],
+        "file_date": file_info["file_date"],
         "watermark": date_to_load_from,
+        "new_watermark": new_watermark,  # what the watermark becomes once the merge succeeds
         "rows_in_file": rows_in_file,
         "new_valid_orders": len(valid_orders),
         "flagged_orders": len(flagged_orders),
