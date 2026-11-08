@@ -5,37 +5,53 @@ Steps:
   2. Read the watermark (max updated_at in orders)
   3. Clean the CSV into orders (fact), customers and products (dimensions)
   4. Load to temp tables, verify row counts, then MERGE into production tables
+
+Can be used as a library (run_pipeline) from the FastAPI app, or from the CLI:
+    python incremental_load.py orders_20261025.csv
 """
+import logging
 import os
 import re
 import sys
+import tempfile
 from datetime import datetime
+from typing import Any
 
 import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
-CSV_PATH = sys.argv[1] if len(sys.argv) > 1 else "orders_20261025.csv"
-ERROR_LOG = "error_log.txt"
+logger = logging.getLogger("incremental_load")
+
+# Cloud Run's filesystem is in-memory and ephemeral; only /tmp is writable.
+OUTPUT_DIR = os.getenv("OUTPUT_DIR", tempfile.gettempdir())
 
 
 def log_error(message: str) -> None:
-    with open(ERROR_LOG, "a", encoding="utf-8") as f:
+    logger.error(message)
+    with open(os.path.join(OUTPUT_DIR, "error_log.txt"), "a", encoding="utf-8") as f:
         f.write(f"{message}\n")
 
 
 # --------------------------------------------------------------------------- #
 # Connection
 # --------------------------------------------------------------------------- #
+_engine = None
+
+
 def get_engine():
-    load_dotenv()
-    # Force the explicit synchronous psycopg2 driver
-    db_url = re.sub(r"^postgresql:", "postgresql+psycopg2:", os.getenv("DATABASE_URL", ""))
-    return create_engine(
-        db_url,
-        pool_recycle=300,   # cycle out stale connections
-        pool_pre_ping=True,  # check connection health before executing
-    )
+    """Create the engine once and reuse it across requests."""
+    global _engine
+    if _engine is None:
+        load_dotenv()
+        # Force the explicit synchronous psycopg2 driver
+        db_url = re.sub(r"^postgres(ql)?:", "postgresql+psycopg2:", os.getenv("DATABASE_URL", ""))
+        _engine = create_engine(
+            db_url,
+            pool_recycle=300,    # cycle out stale connections
+            pool_pre_ping=True,  # check connection health before executing
+        )
+    return _engine
 
 
 def get_watermark(engine) -> str:
@@ -79,10 +95,14 @@ def build_orders(df: pd.DataFrame, date_to_load_from: str):
     return valid_orders, flagged_orders
 
 
-def write_flagged(flagged_orders: pd.DataFrame) -> None:
-    if not flagged_orders.empty:
-        run_date = datetime.now().strftime("%Y%m%d")
-        flagged_orders.to_csv(f"flagged_orders_{run_date}.csv", index=False)
+def write_flagged(flagged_orders: pd.DataFrame) -> str | None:
+    """Write flagged rows to a CSV; returns the path (or None if nothing flagged)."""
+    if flagged_orders.empty:
+        return None
+    run_date = datetime.now().strftime("%Y%m%d")
+    path = os.path.join(OUTPUT_DIR, f"flagged_orders_{run_date}.csv")
+    flagged_orders.to_csv(path, index=False)
+    return path
 
 
 def build_customers(df: pd.DataFrame) -> pd.DataFrame:
@@ -147,55 +167,68 @@ PRODUCTS_MERGE = text("""
 
 
 def stage_and_merge(engine, df: pd.DataFrame, temp_table: str,
-                    count_col: str, merge_query, label: str) -> bool:
-    """Load df into a temp table, verify row counts match, then MERGE and drop temp.
-
-    Returns True if merged, False if skipped because counts did not match.
-    """
+                    count_col: str, merge_query, label: str) -> dict[str, Any]:
+    """Load df into a temp table, verify row counts match, then MERGE and drop temp."""
     df.to_sql(temp_table, con=engine, if_exists="replace", index=False)
 
     count_df = pd.read_sql(f"SELECT count({count_col}) FROM {temp_table}", con=engine)
     local_count = len(df)
     db_count = int(count_df.iloc[0, 0])
-    print(f"{label}: local={local_count} staged={db_count}")
+    logger.info("%s: local=%s staged=%s", label, local_count, db_count)
 
     if local_count != db_count:
         log_error(
             f"Failed to execute merge query for {label} on {datetime.now()} "
             f"because local count ({local_count}) and sql table count ({db_count}) were off"
         )
-        print(f"Mismatch with {label} counts - merge skipped, see {ERROR_LOG}")
-        return False
+        return {"merged": False, "local_count": local_count, "staged_count": db_count}
 
     with engine.begin() as connection:
         connection.execute(merge_query)
         connection.execute(text(f"DROP TABLE {temp_table};"))
-    return True
+    return {"merged": True, "local_count": local_count, "staged_count": db_count}
 
 
 # --------------------------------------------------------------------------- #
-# Main
+# Orchestration
 # --------------------------------------------------------------------------- #
-def main() -> None:
+def run_pipeline(source) -> dict[str, Any]:
+    """Run the full incremental load.
+
+    `source` is anything pandas.read_csv accepts: a path or a file-like object.
+    Returns a JSON-serialisable summary of what happened.
+    """
     engine = get_engine()
 
-    # sanity check connection
-    print(pd.read_sql("SELECT * FROM orders LIMIT 5;", con=engine))
-
     date_to_load_from = get_watermark(engine)
-    print(f"Watermark: {date_to_load_from}")
+    logger.info("Watermark: %s", date_to_load_from)
 
-    df = pd.read_csv(CSV_PATH)
+    df = pd.read_csv(source)
+    rows_in_file = len(df)
 
     valid_orders, flagged_orders = build_orders(df, date_to_load_from)
-    write_flagged(flagged_orders)
+    flagged_path = write_flagged(flagged_orders)
 
     customers = build_customers(df)  # built but not loaded yet (same as notebook)
     products = build_products(df)
 
-    stage_and_merge(engine, valid_orders, "orders_temp", "order_id", ORDERS_MERGE, "orders")
-    stage_and_merge(engine, products, "products_temp", "product", PRODUCTS_MERGE, "products")
+    orders_result = stage_and_merge(engine, valid_orders, "orders_temp", "order_id", ORDERS_MERGE, "orders")
+    products_result = stage_and_merge(engine, products, "products_temp", "product", PRODUCTS_MERGE, "products")
+
+    return {
+        "watermark": date_to_load_from,
+        "rows_in_file": rows_in_file,
+        "new_valid_orders": len(valid_orders),
+        "flagged_orders": len(flagged_orders),
+        "flagged_file": flagged_path,
+        "customers_built": len(customers),
+        "orders": orders_result,
+        "products": products_result,
+        "success": orders_result["merged"] and products_result["merged"],
+    }
 
 
 if __name__ == "__main__":
-    main()
+    logging.basicConfig(level=logging.INFO)
+    csv_path = sys.argv[1] if len(sys.argv) > 1 else "orders_20261025.csv"
+    print(run_pipeline(csv_path))
