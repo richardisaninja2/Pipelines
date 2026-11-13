@@ -5,6 +5,7 @@ Steps:
   2. Read the watermark (max updated_at in orders)
   3. Clean the CSV into orders (fact), customers and products (dimensions)
   4. Load to temp tables, verify row counts, then MERGE into production tables
+     (products, customers, then orders)
 
 Can be used as a library (run_pipeline) from the FastAPI app, or from the CLI:
     python incremental_load.py orders_20261025.csv
@@ -71,10 +72,11 @@ def build_orders(df: pd.DataFrame, date_to_load_from: str):
          "total_amount", "status", "country", "updated_at"]
     ].copy()
 
-    # only rows after the cutoff
+    # rows at or after the cutoff. >= (not >) so rows that tie with the last loaded
+    # timestamp are not skipped; safe because the MERGE upserts are idempotent.
     cutoff_time = pd.to_datetime(date_to_load_from)
     orders["updated_at"] = pd.to_datetime(orders["updated_at"])
-    orders = orders[orders["updated_at"] > cutoff_time].copy()
+    orders = orders[orders["updated_at"] >= cutoff_time].copy()
 
     # drop duplicates, keep the last entry
     orders = orders.drop_duplicates(subset="order_id", keep="last")
@@ -134,6 +136,7 @@ def write_flagged(flagged_orders: pd.DataFrame, file_stem: str | None = None) ->
 
 def build_customers(df: pd.DataFrame) -> pd.DataFrame:
     customers = df[["customer_id", "customer_name", "email", "country"]].copy()
+    customers["customer_id"] = customers["customer_id"].astype(int)
     customers["customer_name"] = customers["customer_name"].str.title().fillna("Missing")
     customers = customers.drop_duplicates(subset="customer_id", keep="first")
     customers["country"] = customers["country"].str.upper().fillna("Missing")
@@ -144,9 +147,11 @@ def build_customers(df: pd.DataFrame) -> pd.DataFrame:
 def build_products(df: pd.DataFrame) -> pd.DataFrame:
     products = df[["product", "category", "unit_price"]].copy()
     products["unit_price"] = products["unit_price"].astype(str).str.replace("$", "", regex=False).astype(float)
-    products = products.drop_duplicates(subset="product")
+    # clean names BEFORE removing duplicates, so "wireless mouse" and "Wireless Mouse"
+    # collapse into one row instead of producing two rows with the same key
     products["category"] = products["category"].str.title()
     products["product"] = products["product"].str.title()
+    products = products.drop_duplicates(subset="product")
     return products
 
 
@@ -190,6 +195,21 @@ PRODUCTS_MERGE = text("""
     WHEN NOT MATCHED THEN
         INSERT (product, category, unit_price)
         VALUES (source.product, source.category, source.unit_price)
+""")
+
+
+CUSTOMERS_MERGE = text("""
+    MERGE INTO customers AS target
+    USING customers_temp AS source
+    ON target.customer_id = source.customer_id::integer
+    WHEN MATCHED THEN
+        UPDATE SET
+            customer_name = CASE WHEN source.customer_name = 'Missing' THEN target.customer_name ELSE source.customer_name END,
+            email         = CASE WHEN source.email         = 'Missing' THEN target.email         ELSE source.email         END,
+            country       = CASE WHEN source.country       = 'Missing' THEN target.country       ELSE source.country       END
+    WHEN NOT MATCHED THEN
+        INSERT (customer_id, customer_name, email, country)
+        VALUES (source.customer_id::integer, source.customer_name, source.email, source.country);
 """)
 
 
@@ -243,11 +263,13 @@ def run_pipeline(source, source_name: str | None = None) -> dict[str, Any]:
     valid_orders, flagged_orders = build_orders(df, date_to_load_from)
     flagged_path = write_flagged(flagged_orders, file_info["file_stem"])
 
-    customers = build_customers(df)  # built but not loaded yet (same as notebook)
+    customers = build_customers(df)
     products = build_products(df)
 
-    orders_result = stage_and_merge(engine, valid_orders, "orders_temp", "order_id", ORDERS_MERGE, "orders")
+    # dimensions first, then the fact table, so an order never lands before its product/customer
     products_result = stage_and_merge(engine, products, "products_temp", "product", PRODUCTS_MERGE, "products")
+    customers_result = stage_and_merge(engine, customers, "customers_temp", "customer_id", CUSTOMERS_MERGE, "customers")
+    orders_result = stage_and_merge(engine, valid_orders, "orders_temp", "order_id", ORDERS_MERGE, "orders")
 
     new_watermark = (
         valid_orders["updated_at"].max().strftime("%Y-%m-%d %H:%M:%S")
@@ -264,10 +286,10 @@ def run_pipeline(source, source_name: str | None = None) -> dict[str, Any]:
         "new_valid_orders": len(valid_orders),
         "flagged_orders": len(flagged_orders),
         "flagged_file": flagged_path,
-        "customers_built": len(customers),
         "orders": orders_result,
         "products": products_result,
-        "success": orders_result["merged"] and products_result["merged"],
+        "customers": customers_result,
+        "success": all(r["merged"] for r in (orders_result, products_result, customers_result)),
     }
 
 
